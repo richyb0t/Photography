@@ -1,3 +1,55 @@
+const hamburger = document.querySelector(".hamburger");
+        const navMenu = document.querySelector(".nav-menu");
+        const navbar = document.querySelector(".navbar");
+        const navLinks = document.querySelectorAll(".nav-link");
+
+        // Toggle menú hamburguesa
+        hamburger.addEventListener("click", () => {
+            hamburger.classList.toggle("active");
+            navMenu.classList.toggle("active");
+            
+            // Prevenir scroll cuando el menú está abierto
+            document.body.style.overflow = navMenu.classList.contains("active") ? "hidden" : "";
+        });
+
+        // Cerrar menú al hacer click en un enlace
+        navLinks.forEach(link => {
+            link.addEventListener("click", () => {
+                hamburger.classList.remove("active");
+                navMenu.classList.remove("active");
+                document.body.style.overflow = "";
+            });
+        });
+
+        // Cerrar menú al hacer click fuera de él
+        document.addEventListener("click", (e) => {
+            if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
+                hamburger.classList.remove("active");
+                navMenu.classList.remove("active");
+                document.body.style.overflow = "";
+            }
+        });
+
+        // Efecto de scroll en navbar
+        window.addEventListener("scroll", () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add("scrolled");
+            } else {
+                navbar.classList.remove("scrolled");
+            }
+        });
+
+        // Prevenir zoom en iOS al hacer doble tap
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
+        
 // 3D Tilt Effect for Portfolio Items
 function initTiltEffect() {
     const tiltElements = document.querySelectorAll('[data-tilt]');
