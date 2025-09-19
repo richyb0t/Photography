@@ -3,6 +3,7 @@ function initTiltEffect() {
     const tiltElements = document.querySelectorAll('[data-tilt]');
     
     tiltElements.forEach(element => {
+        const inner = element.querySelector('.portfolio-inner');
         element.addEventListener('mousemove', (e) => {
             const rect = element.getBoundingClientRect();
             const x = e.clientX - rect.left;
@@ -14,14 +15,15 @@ function initTiltEffect() {
             const rotateX = (y - centerY) / centerY * -10;
             const rotateY = (x - centerX) / centerX * 10;
             
-            element.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(6px)`;
+            inner.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(12px)`;
         });
         
         element.addEventListener('mouseleave', () => {
-            element.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+            inner.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateZ(0)';
         });
     });
 }
+
 
 // Smooth scrolling for navigation links
 function initSmoothScrolling() {
@@ -41,16 +43,13 @@ function initSmoothScrolling() {
 
 // Navbar scroll effect with 3D transform
 function initNavbarEffects() {
-    window.addEventListener('scroll', function() {
+    window.addEventListener('scroll', () => {
         const navbar = document.querySelector('.navbar');
-        const scrollY = window.scrollY;
         
-        if (scrollY > 50) {
+        if (window.scrollY > 50) {
             navbar.classList.add('scrolled');
-            navbar.style.transform = `translateY(${Math.min(scrollY * 0.02, 2)}px) rotateX(${Math.min(scrollY * 0.01, 1)}deg)`;
         } else {
             navbar.classList.remove('scrolled');
-            navbar.style.transform = 'translateY(0px) rotateX(0deg)';
         }
     });
 }
