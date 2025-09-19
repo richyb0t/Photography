@@ -89,27 +89,6 @@ function initScrollAnimations() {
     });
 }
 
-// Parallax effect for hero section
-function initParallaxEffect() {
-    window.addEventListener('scroll', () => {
-        const scrolled = window.pageYOffset;
-        const hero = document.querySelector('.hero');
-        const heroContent = document.querySelector('.hero-content');
-        const floatingElements = document.querySelectorAll('.float-element');
-        
-        if (hero && scrolled <= hero.offsetHeight) {
-            const rate = scrolled * -0.5;
-            const rate2 = scrolled * -0.3;
-            
-            heroContent.style.transform = `translate3d(0, ${rate2}px, 0) rotateX(${scrolled * 0.02}deg)`;
-            
-            floatingElements.forEach((element, index) => {
-                const speed = 0.2 + (index * 0.1);
-                element.style.transform = `translate3d(0, ${scrolled * speed}px, 0) rotate(${scrolled * 0.1}deg)`;
-            });
-        }
-    });
-}
 
 // Form submission with enhanced 3D feedback
 function initFormHandling() {
