@@ -732,3 +732,626 @@ document.querySelectorAll('.portfolio-image').forEach(img => {
         }, 1500);
     });
 });
+
+// Animaciones profesionales específicas por sección
+class SectionAnimations {
+    constructor() {
+        this.observers = new Map();
+        this.animationQueues = new Map();
+        this.init();
+    }
+
+    init() {
+        this.setupSectionObservers();
+        this.addCustomStyles();
+    }
+
+    // Configurar observadores para cada sección
+    setupSectionObservers() {
+        const sections = {
+            '#portafolio': this.animatePortfolioSection.bind(this),
+            '.stats-section': this.animateStatsSection.bind(this),
+            '#servicios': this.animateServicesSection.bind(this),
+            '#contacto': this.animateContactSection.bind(this)
+        };
+
+        Object.entries(sections).forEach(([selector, animationFunc]) => {
+            const element = document.querySelector(selector);
+            if (element) {
+                const observer = new IntersectionObserver(
+                    (entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                animationFunc(entry.target);
+                                observer.unobserve(entry.target);
+                            }
+                        });
+                    },
+                    {
+                        threshold: 0.2,
+                        rootMargin: '-50px 0px'
+                    }
+                );
+                observer.observe(element);
+                this.observers.set(selector, observer);
+            }
+        });
+    }
+
+    // 1. Animación de Portfolio - Efecto Masonería Flotante
+    animatePortfolioSection(section) {
+        const header = section.querySelector('.section-header');
+        const portfolioItems = section.querySelectorAll('.portfolio-item');
+
+        // Animar header con efecto typewriter
+        this.animateTypewriter(header.querySelector('.section-title'));
+        
+        setTimeout(() => {
+            header.querySelector('.section-subtitle').style.opacity = '1';
+            header.querySelector('.section-subtitle').style.transform = 'translateY(0) rotateX(0deg)';
+        }, 1000);
+
+        // Efecto masonería flotante para portfolio items
+        portfolioItems.forEach((item, index) => {
+            // Posición inicial desde diferentes direcciones
+            const directions = [
+                'translateX(-100px) translateY(-50px) rotateY(-45deg)',
+                'translateX(100px) translateY(-30px) rotateY(45deg)',
+                'translateY(100px) rotateX(45deg)',
+                'translateX(-80px) translateY(80px) rotateZ(-15deg)',
+                'translateX(80px) translateY(-80px) rotateZ(15deg)'
+            ];
+
+            item.style.opacity = '0';
+            item.style.transform = directions[index % directions.length] + ' scale(0.7)';
+
+            setTimeout(() => {
+                item.style.transition = `all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)`;
+                item.style.opacity = '1';
+                item.style.transform = 'translateX(0) translateY(0) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1)';
+                
+                // Efecto de rebote final
+                setTimeout(() => {
+                    item.style.transform = 'scale(1.05)';
+                    setTimeout(() => {
+                        item.style.transform = 'scale(1)';
+                    }, 150);
+                }, 300);
+
+            }, index * 150 + 500);
+        });
+
+        // Agregar efecto de partículas flotantes
+        this.addFloatingParticles(section, 'portfolio');
+    }
+
+    // 2. Animación de Stats - Contador Digital con Hologramas
+    animateStatsSection(section) {
+        const statItems = section.querySelectorAll('.stat-item');
+        
+        statItems.forEach((item, index) => {
+            // Efecto de materialización holográfica
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(100px) rotateX(90deg) scale(0.5)';
+            
+            setTimeout(() => {
+                item.style.transition = 'all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                item.style.opacity = '1';
+                item.style.transform = 'translateY(0px) rotateX(0deg) scale(1)';
+
+                // Efecto de brillo en el borde
+                this.addGlowEffect(item);
+
+                // Animación del contador con efecto digital
+                const numberElement = item.querySelector('.stat-number');
+                const originalText = numberElement.textContent;
+                
+                setTimeout(() => {
+                    this.animateDigitalCounter(numberElement, originalText);
+                }, 300);
+
+            }, index * 200 + 300);
+        });
+
+        // Efecto de ondas expansivas
+        this.createWaveEffect(section);
+    }
+
+    // 3. Animación de Servicios - Cards Giratorias con Morfismo
+    animateServicesSection(section) {
+        const header = section.querySelector('.section-header');
+        const serviceCards = section.querySelectorAll('.service-card');
+
+        // Header con efecto de enfoque
+        this.animateFocusEffect(header);
+
+        serviceCards.forEach((card, index) => {
+            // Efecto flip 3D desde diferentes ejes
+            const rotations = [
+                'rotateY(-180deg)',
+                'rotateX(-180deg)',
+                'rotateY(180deg)'
+            ];
+
+            card.style.opacity = '0';
+            card.style.transform = `${rotations[index % rotations.length]} scale(0.8)`;
+            card.style.transformOrigin = 'center center';
+
+            setTimeout(() => {
+                card.style.transition = 'all 1.2s cubic-bezier(0.23, 1, 0.320, 1)';
+                card.style.opacity = '1';
+                card.style.transform = 'rotateY(0deg) rotateX(0deg) scale(1)';
+
+                // Efecto de morfismo en hover
+                this.addMorphismEffect(card);
+
+                // Animación del icono con rotación orbital
+                const icon = card.querySelector('.service-icon');
+                setTimeout(() => {
+                    this.addOrbitalRotation(icon);
+                }, 600);
+
+            }, index * 300 + 400);
+        });
+
+        // Efecto de campo de fuerza
+        this.createForceField(section);
+    }
+
+    // 4. Animación de Contacto - Construcción Arquitectónica
+    animateContactSection(section) {
+        const header = section.querySelector('.section-header');
+        const contactInfo = section.querySelector('.contact-info');
+        const contactForm = section.querySelector('.contact-form');
+
+        // Header con efecto de construcción
+        this.animateArchitecturalBuild(header);
+
+        // Información de contacto - Efecto de ensamblaje
+        setTimeout(() => {
+            const contactItems = contactInfo.querySelectorAll('.contact-item');
+            contactItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateX(-200px) rotateY(-90deg)';
+                
+                setTimeout(() => {
+                    item.style.transition = 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateX(0px) rotateY(0deg)';
+                    
+                    // Efecto de pulso en el icono
+                    this.addPulseEffect(item.querySelector('.contact-icon'));
+                }, index * 150);
+            });
+
+            // Redes sociales con efecto cascada
+            const socialLinks = contactInfo.querySelectorAll('.social-link');
+            setTimeout(() => {
+                socialLinks.forEach((link, index) => {
+                    link.style.opacity = '0';
+                    link.style.transform = 'scale(0) rotateZ(180deg)';
+                    
+                    setTimeout(() => {
+                        link.style.transition = 'all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                        link.style.opacity = '1';
+                        link.style.transform = 'scale(1) rotateZ(0deg)';
+                    }, index * 100);
+                });
+            }, 800);
+
+        }, 500);
+
+        // Formulario - Efecto de construcción modular
+        setTimeout(() => {
+            const formGroups = contactForm.querySelectorAll('.form-group');
+            const submitBtn = contactForm.querySelector('.btn-submit');
+
+            formGroups.forEach((group, index) => {
+                group.style.opacity = '0';
+                group.style.transform = 'translateX(100px) rotateX(45deg)';
+                
+                setTimeout(() => {
+                    group.style.transition = 'all 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                    group.style.opacity = '1';
+                    group.style.transform = 'translateX(0px) rotateX(0deg)';
+                    
+                    // Efecto focus mejorado para inputs
+                    this.enhanceFormInputs(group);
+                }, index * 100);
+            });
+
+            // Botón submit con efecto final espectacular
+            setTimeout(() => {
+                submitBtn.style.opacity = '0';
+                submitBtn.style.transform = 'scale(0.5) rotateZ(-180deg)';
+                
+                setTimeout(() => {
+                    submitBtn.style.transition = 'all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                    submitBtn.style.opacity = '1';
+                    submitBtn.style.transform = 'scale(1) rotateZ(0deg)';
+                    
+                    // Efecto de brillo permanente
+                    this.addShimmerEffect(submitBtn);
+                }, 200);
+            }, formGroups.length * 100 + 300);
+
+        }, 800);
+    }
+
+    // Efectos auxiliares especializados
+    animateTypewriter(element) {
+        const text = element.textContent;
+        element.textContent = '';
+        element.style.borderRight = '2px solid var(--accent-color)';
+        
+        let index = 0;
+        const timer = setInterval(() => {
+            element.textContent += text[index];
+            index++;
+            
+            if (index >= text.length) {
+                clearInterval(timer);
+                setTimeout(() => {
+                    element.style.borderRight = 'none';
+                }, 500);
+            }
+        }, 100);
+    }
+
+    animateDigitalCounter(element, targetText) {
+        const targetNumber = parseInt(targetText);
+        const isPercentage = targetText.includes('%');
+        const isPlus = targetText.includes('+');
+        const isHours = targetText.includes('h');
+        
+        let current = 0;
+        const increment = Math.ceil(targetNumber / 50);
+        
+        element.style.fontFamily = 'monospace';
+        element.style.background = 'linear-gradient(45deg, var(--accent-color), #f4d03f)';
+        element.style.webkitBackgroundClip = 'text';
+        element.style.webkitTextFillColor = 'transparent';
+        
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= targetNumber) {
+                current = targetNumber;
+                clearInterval(timer);
+            }
+            
+            let displayText = current.toString();
+            if (isPercentage) displayText += '%';
+            if (isPlus) displayText += '+';
+            if (isHours) displayText += 'h';
+            
+            element.textContent = displayText;
+            
+            // Efecto de glitch ocasional
+            if (Math.random() > 0.9) {
+                element.style.transform = `translateX(${Math.random() * 4 - 2}px)`;
+                setTimeout(() => {
+                    element.style.transform = 'translateZ(20px)';
+                }, 50);
+            }
+        }, 50);
+    }
+
+    addGlowEffect(element) {
+        element.style.boxShadow = `
+            0 0 20px rgba(212, 175, 55, 0.3),
+            0 0 40px rgba(212, 175, 55, 0.2),
+            0 0 60px rgba(212, 175, 55, 0.1),
+            inset 0 0 20px rgba(212, 175, 55, 0.1)
+        `;
+        
+        // Pulso de brillo
+        setInterval(() => {
+            element.style.boxShadow = `
+                0 0 30px rgba(212, 175, 55, 0.5),
+                0 0 60px rgba(212, 175, 55, 0.3),
+                0 0 90px rgba(212, 175, 55, 0.2),
+                inset 0 0 30px rgba(212, 175, 55, 0.15)
+            `;
+            
+            setTimeout(() => {
+                element.style.boxShadow = `
+                    0 0 20px rgba(212, 175, 55, 0.3),
+                    0 0 40px rgba(212, 175, 55, 0.2),
+                    0 0 60px rgba(212, 175, 55, 0.1),
+                    inset 0 0 20px rgba(212, 175, 55, 0.1)
+                `;
+            }, 1000);
+        }, 3000);
+    }
+
+    addMorphismEffect(card) {
+        card.addEventListener('mouseenter', () => {
+            card.style.transform = 'perspective(1000px) rotateY(10deg) rotateX(5deg) scale(1.05)';
+            card.style.background = 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 100%)';
+            card.style.backdropFilter = 'blur(20px) saturate(200%)';
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1)';
+            card.style.background = 'var(--white)';
+            card.style.backdropFilter = 'none';
+        });
+    }
+
+    addOrbitalRotation(icon) {
+        icon.style.animation = 'orbit 4s linear infinite';
+        
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes orbit {
+                0% { transform: translateZ(20px) rotateZ(0deg); }
+                25% { transform: translateZ(30px) rotateZ(90deg) scale(1.1); }
+                50% { transform: translateZ(20px) rotateZ(180deg); }
+                75% { transform: translateZ(30px) rotateZ(270deg) scale(1.1); }
+                100% { transform: translateZ(20px) rotateZ(360deg); }
+            }
+        `;
+        if (!document.querySelector('#orbit-animation')) {
+            style.id = 'orbit-animation';
+            document.head.appendChild(style);
+        }
+    }
+
+    addFloatingParticles(section, type) {
+        const colors = type === 'portfolio' ? 
+            ['rgba(212, 175, 55, 0.4)', 'rgba(244, 208, 63, 0.3)'] :
+            ['rgba(255, 255, 255, 0.2)', 'rgba(212, 175, 55, 0.2)'];
+        
+        for (let i = 0; i < 15; i++) {
+            const particle = document.createElement('div');
+            particle.style.cssText = `
+                position: absolute;
+                width: ${Math.random() * 8 + 3}px;
+                height: ${Math.random() * 8 + 3}px;
+                background: ${colors[Math.floor(Math.random() * colors.length)]};
+                border-radius: 50%;
+                left: ${Math.random() * 100}%;
+                top: ${Math.random() * 100}%;
+                animation: floatComplex ${Math.random() * 10 + 5}s ease-in-out infinite;
+                pointer-events: none;
+                z-index: 1;
+            `;
+            
+            section.style.position = 'relative';
+            section.appendChild(particle);
+        }
+    }
+
+    createWaveEffect(section) {
+        const wave = document.createElement('div');
+        wave.style.cssText = `
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: expandWave 3s ease-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        `;
+        
+        section.style.position = 'relative';
+        section.appendChild(wave);
+    }
+
+    addShimmerEffect(element) {
+        element.style.position = 'relative';
+        element.style.overflow = 'hidden';
+        
+        const shimmer = document.createElement('div');
+        shimmer.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 3s ease-in-out infinite;
+            pointer-events: none;
+        `;
+        
+        element.appendChild(shimmer);
+    }
+
+    // Estilos CSS adicionales para las animaciones
+    addCustomStyles() {
+        const styles = `
+            @keyframes floatComplex {
+                0%, 100% { 
+                    transform: translateY(0px) translateX(0px) rotateZ(0deg) scale(1);
+                    opacity: 1;
+                }
+                25% { 
+                    transform: translateY(-30px) translateX(20px) rotateZ(90deg) scale(1.2);
+                    opacity: 0.7;
+                }
+                50% { 
+                    transform: translateY(-60px) translateX(-10px) rotateZ(180deg) scale(0.8);
+                    opacity: 0.4;
+                }
+                75% { 
+                    transform: translateY(-30px) translateX(-25px) rotateZ(270deg) scale(1.1);
+                    opacity: 0.6;
+                }
+            }
+
+            @keyframes expandWave {
+                0% {
+                    width: 0;
+                    height: 0;
+                    opacity: 1;
+                }
+                50% {
+                    width: 300px;
+                    height: 300px;
+                    opacity: 0.5;
+                }
+                100% {
+                    width: 600px;
+                    height: 600px;
+                    opacity: 0;
+                }
+            }
+
+            @keyframes shimmer {
+                0% { left: -100%; }
+                50% { left: 100%; }
+                100% { left: 100%; }
+            }
+
+            .section-header .section-subtitle {
+                opacity: 0;
+                transform: translateY(30px) rotateX(15deg);
+                transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+
+            .form-group {
+                position: relative;
+                overflow: hidden;
+            }
+
+            .form-control:focus {
+                transform: translateY(-2px) translateZ(5px);
+                box-shadow: 
+                    0 0 0 4px rgba(212, 175, 55, 0.1), 
+                    0 10px 30px rgba(0, 0, 0, 0.15),
+                    0 0 20px rgba(212, 175, 55, 0.2);
+            }
+        `;
+
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = styles;
+        document.head.appendChild(styleSheet);
+    }
+
+    // Métodos auxiliares adicionales
+    animateFocusEffect(header) {
+        header.style.filter = 'blur(20px)';
+        header.style.opacity = '0';
+        header.style.transform = 'scale(1.2)';
+        
+        setTimeout(() => {
+            header.style.transition = 'all 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            header.style.filter = 'blur(0px)';
+            header.style.opacity = '1';
+            header.style.transform = 'scale(1)';
+        }, 200);
+    }
+
+    animateArchitecturalBuild(header) {
+        const title = header.querySelector('.section-title');
+        const subtitle = header.querySelector('.section-subtitle');
+        
+        // Efecto de construcción línea por línea
+        title.style.clipPath = 'polygon(0 0, 0 0, 0 100%, 0 100%)';
+        subtitle.style.clipPath = 'polygon(0 0, 0 0, 0 100%, 0 100%)';
+        
+        setTimeout(() => {
+            title.style.transition = 'clip-path 1s ease-out';
+            title.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%, 0 100%)';
+            
+            setTimeout(() => {
+                subtitle.style.transition = 'clip-path 0.8s ease-out';
+                subtitle.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%, 0 100%)';
+            }, 500);
+        }, 300);
+    }
+
+    addPulseEffect(element) {
+        setInterval(() => {
+            element.style.transform = 'translateZ(15px) scale(1.2)';
+            element.style.boxShadow = '0 10px 25px rgba(212, 175, 55, 0.4)';
+            
+            setTimeout(() => {
+                element.style.transform = 'translateZ(15px) scale(1)';
+                element.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.1)';
+            }, 300);
+        }, 2000);
+    }
+
+    enhanceFormInputs(group) {
+        const input = group.querySelector('.form-control');
+        if (input) {
+            input.addEventListener('focus', () => {
+                group.style.transform = 'perspective(500px) rotateX(-5deg) translateZ(10px)';
+                input.style.borderColor = 'var(--accent-color)';
+                input.style.boxShadow = '0 0 20px rgba(212, 175, 55, 0.3)';
+            });
+            
+            input.addEventListener('blur', () => {
+                group.style.transform = 'perspective(500px) rotateX(0deg) translateZ(0px)';
+            });
+        }
+    }
+
+    createForceField(section) {
+        const fieldLines = [];
+        
+        for (let i = 0; i < 8; i++) {
+            const line = document.createElement('div');
+            line.style.cssText = `
+                position: absolute;
+                width: 2px;
+                height: 100px;
+                background: linear-gradient(to bottom, transparent, rgba(212, 175, 55, 0.3), transparent);
+                left: ${Math.random() * 100}%;
+                top: ${Math.random() * 100}%;
+                animation: forceField ${Math.random() * 4 + 2}s ease-in-out infinite alternate;
+                pointer-events: none;
+                z-index: 0;
+                transform-origin: center;
+            `;
+            
+            fieldLines.push(line);
+            section.appendChild(line);
+        }
+
+        // Agregar animación de campo de fuerza
+        const forceFieldStyle = document.createElement('style');
+        forceFieldStyle.textContent = `
+            @keyframes forceField {
+                0% { 
+                    transform: scaleY(0.5) rotateZ(0deg);
+                    opacity: 0.3;
+                }
+                100% { 
+                    transform: scaleY(1.5) rotateZ(360deg);
+                    opacity: 0.8;
+                }
+            }
+        `;
+        document.head.appendChild(forceFieldStyle);
+    }
+}
+
+// Integrar con el sistema existente
+function initAdvancedSectionAnimations() {
+    // Esperar a que el DOM esté listo
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            new SectionAnimations();
+        });
+    } else {
+        new SectionAnimations();
+    }
+}
+
+// Inicializar las animaciones avanzadas
+initAdvancedSectionAnimations();
+
+// Agregar al sistema de inicialización existente
+if (typeof initializeAll === 'function') {
+    const originalInit = initializeAll;
+    initializeAll = function() {
+        originalInit();
+        new SectionAnimations();
+    };
+}
