@@ -1078,25 +1078,6 @@ class SectionAnimations {
         });
     }
 
-    addOrbitalRotation(icon) {
-        icon.style.animation = 'orbit 4s linear infinite';
-        
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes orbit {
-                0% { transform: translateZ(20px) rotateZ(0deg); }
-                25% { transform: translateZ(30px) rotateZ(90deg) scale(1.1); }
-                50% { transform: translateZ(20px) rotateZ(180deg); }
-                75% { transform: translateZ(30px) rotateZ(270deg) scale(1.1); }
-                100% { transform: translateZ(20px) rotateZ(360deg); }
-            }
-        `;
-        if (!document.querySelector('#orbit-animation')) {
-            style.id = 'orbit-animation';
-            document.head.appendChild(style);
-        }
-    }
-
     addFloatingParticles(section, type) {
         const colors = type === 'portfolio' ? 
             ['rgba(212, 175, 55, 0.4)', 'rgba(244, 208, 63, 0.3)'] :
@@ -1355,3 +1336,566 @@ if (typeof initializeAll === 'function') {
         new SectionAnimations();
     };
 }
+// Animación cinematográfica para Hero Section
+class HeroCinematicAnimation {
+    constructor() {
+        this.hero = document.querySelector('.hero');
+        this.heroContent = document.querySelector('.hero-content');
+        this.heroCard = document.querySelector('.hero-card');
+        this.title = this.hero.querySelector('h1');
+        this.subtitle = this.hero.querySelector('.hero-subtitle');
+        this.ctaButton = this.hero.querySelector('.cta-button');
+        this.floatingElements = this.hero.querySelector('.floating-elements');
+        
+        this.init();
+    }
+
+    init() {
+        this.setupInitialState();
+        this.createCinematicElements();
+        this.startCinematicSequence();
+        this.addInteractiveEffects();
+        this.addCustomStyles();
+    }
+
+    setupInitialState() {
+        // Configurar estado inicial para animación cinematográfica
+        this.heroCard.style.opacity = '0';
+        this.heroCard.style.transform = 'perspective(2000px) rotateX(45deg) translateY(100px) scale(0.8)';
+        this.heroCard.style.filter = 'blur(20px)';
+        
+        this.title.style.opacity = '0';
+        this.title.style.transform = 'perspective(1000px) rotateY(-90deg) translateX(-200px)';
+        this.title.style.filter = 'blur(10px)';
+        
+        this.subtitle.style.opacity = '0';
+        this.subtitle.style.transform = 'translateY(50px) scale(0.9)';
+        this.subtitle.style.filter = 'blur(5px)';
+        
+        this.ctaButton.style.opacity = '0';
+        this.ctaButton.style.transform = 'perspective(800px) rotateX(90deg) translateZ(-100px)';
+        this.ctaButton.style.filter = 'blur(8px)';
+    }
+
+    createCinematicElements() {
+        // Crear velo cinematográfico que se desvanece
+        const cinematicVeil = document.createElement('div');
+        cinematicVeil.className = 'cinematic-veil';
+        cinematicVeil.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(0, 0, 0, 0.9) 0%, 
+                rgba(44, 44, 84, 0.7) 50%, 
+                rgba(212, 175, 55, 0.3) 100%);
+            z-index: 10;
+            pointer-events: none;
+            animation: veilDissolve 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        `;
+        this.hero.appendChild(cinematicVeil);
+
+        // Crear efectos de luz cinematográfica
+        this.createLightRays();
+        
+        // Crear partículas de polvo flotante
+        this.createDustParticles();
+        
+        // Crear elementos de profundidad
+        this.createDepthLayers();
+    }
+
+    createLightRays() {
+        const lightContainer = document.createElement('div');
+        lightContainer.className = 'light-rays-container';
+        lightContainer.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+            z-index: 2;
+            pointer-events: none;
+        `;
+
+        // Crear múltiples rayos de luz
+        for (let i = 0; i < 6; i++) {
+            const ray = document.createElement('div');
+            ray.className = 'light-ray';
+            ray.style.cssText = `
+                position: absolute;
+                width: 2px;
+                height: 200%;
+                background: linear-gradient(to bottom, 
+                    transparent 0%, 
+                    rgba(212, 175, 55, 0.4) 20%, 
+                    rgba(255, 255, 255, 0.6) 50%, 
+                    rgba(212, 175, 55, 0.4) 80%, 
+                    transparent 100%);
+                left: ${10 + i * 15}%;
+                top: -50%;
+                transform: rotateZ(${-20 + i * 8}deg);
+                opacity: 0;
+                animation: lightRayAppear ${2 + i * 0.3}s ease-out ${1 + i * 0.2}s forwards,
+                          lightRayFloat ${8 + i * 2}s ease-in-out ${3 + i * 0.2}s infinite;
+                filter: blur(1px);
+            `;
+            lightContainer.appendChild(ray);
+        }
+
+        this.hero.insertBefore(lightContainer, this.heroContent);
+    }
+
+    createDustParticles() {
+        const dustContainer = document.createElement('div');
+        dustContainer.className = 'dust-particles';
+        dustContainer.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 3;
+            pointer-events: none;
+        `;
+
+        // Crear partículas de polvo dorado
+        for (let i = 0; i < 25; i++) {
+            const dust = document.createElement('div');
+            dust.className = 'dust-particle';
+            dust.style.cssText = `
+                position: absolute;
+                width: ${Math.random() * 4 + 1}px;
+                height: ${Math.random() * 4 + 1}px;
+                background: radial-gradient(circle, 
+                    rgba(212, 175, 55, 0.8) 0%, 
+                    rgba(255, 255, 255, 0.6) 50%, 
+                    transparent 100%);
+                border-radius: 50%;
+                left: ${Math.random() * 100}%;
+                top: ${Math.random() * 100}%;
+                opacity: 0;
+                animation: dustFloat ${Math.random() * 15 + 10}s linear ${Math.random() * 3}s infinite,
+                          dustFadeIn ${Math.random() * 2 + 1}s ease-out ${Math.random() * 4 + 2}s forwards;
+                filter: blur(0.5px);
+            `;
+            dustContainer.appendChild(dust);
+        }
+
+        this.hero.insertBefore(dustContainer, this.heroContent);
+    }
+
+    createDepthLayers() {
+        // Crear capas de profundidad para efecto parallax futuro
+        const depthLayer1 = document.createElement('div');
+        depthLayer1.className = 'depth-layer depth-layer-1';
+        depthLayer1.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at 30% 70%, 
+                rgba(212, 175, 55, 0.1) 0%, 
+                transparent 60%);
+            z-index: 1;
+            opacity: 0;
+            animation: depthLayerReveal 4s ease-out 2s forwards;
+            transform: scale(1.2);
+        `;
+
+        const depthLayer2 = document.createElement('div');
+        depthLayer2.className = 'depth-layer depth-layer-2';
+        depthLayer2.style.cssText = `
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at 80% 30%, 
+                rgba(44, 44, 84, 0.15) 0%, 
+                transparent 50%);
+            z-index: 1;
+            opacity: 0;
+            animation: depthLayerReveal 4s ease-out 2.5s forwards;
+            transform: scale(0.8);
+        `;
+
+        this.hero.appendChild(depthLayer1);
+        this.hero.appendChild(depthLayer2);
+    }
+
+    startCinematicSequence() {
+        // Secuencia cinematográfica principal
+        
+        // Fase 1: Revelar hero card (1.5s)
+        setTimeout(() => {
+            this.heroCard.style.transition = 'all 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            this.heroCard.style.opacity = '1';
+            this.heroCard.style.transform = 'perspective(2000px) rotateX(0deg) translateY(0px) scale(1)';
+            this.heroCard.style.filter = 'blur(0px)';
+        }, 800);
+
+        // Fase 2: Animación cinematográfica del título (2s)
+        setTimeout(() => {
+            this.animateTitleCinematic();
+        }, 1800);
+
+        // Fase 3: Subtítulo con efecto de máquina de escribir (1.5s)
+        setTimeout(() => {
+            this.animateSubtitleTypewriter();
+        }, 3200);
+
+        // Fase 4: Botón CTA con entrada dramática (1s)
+        setTimeout(() => {
+            this.animateCTADramatic();
+        }, 4500);
+
+        // Fase 5: Activar efectos ambientales continuos
+        setTimeout(() => {
+            this.startAmbientEffects();
+        }, 5500);
+    }
+
+    animateTitleCinematic() {
+        // Dividir el título en caracteres para animación individual
+        const titleText = this.title.textContent;
+        this.title.innerHTML = '';
+        
+        // Crear contenedor para caracteres
+        const charContainer = document.createElement('div');
+        charContainer.style.display = 'inline-block';
+        
+        titleText.split('').forEach((char, index) => {
+            const charSpan = document.createElement('span');
+            charSpan.textContent = char === ' ' ? '\u00A0' : char;
+            charSpan.style.cssText = `
+                display: inline-block;
+                opacity: 0;
+                transform: perspective(800px) rotateY(90deg) translateZ(-100px);
+                filter: blur(5px);
+                animation: charReveal 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) ${index * 0.05}s forwards;
+            `;
+            charContainer.appendChild(charSpan);
+        });
+        
+        this.title.appendChild(charContainer);
+        this.title.style.opacity = '1';
+        this.title.style.transform = 'none';
+        this.title.style.filter = 'none';
+    }
+
+    animateSubtitleTypewriter() {
+        const subtitleText = this.subtitle.textContent;
+        this.subtitle.textContent = '';
+        this.subtitle.style.opacity = '1';
+        this.subtitle.style.transform = 'translateY(0px) scale(1)';
+        this.subtitle.style.filter = 'blur(0px)';
+        this.subtitle.style.borderRight = '2px solid rgba(212, 175, 55, 0.8)';
+        this.subtitle.style.transition = 'all 0.3s ease';
+
+        let charIndex = 0;
+        const typeInterval = setInterval(() => {
+            if (charIndex < subtitleText.length) {
+                this.subtitle.textContent += subtitleText[charIndex];
+                charIndex++;
+                
+                // Efecto de brillo mientras escribe
+                this.subtitle.style.textShadow = `
+                    0 0 10px rgba(212, 175, 55, 0.8),
+                    0 0 20px rgba(212, 175, 55, 0.4)
+                `;
+            } else {
+                clearInterval(typeInterval);
+                // Remover cursor y brillo
+                setTimeout(() => {
+                    this.subtitle.style.borderRight = 'none';
+                    this.subtitle.style.textShadow = 'none';
+                }, 500);
+            }
+        }, 80);
+    }
+
+    animateCTADramatic() {
+        this.ctaButton.style.transition = 'all 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+        this.ctaButton.style.opacity = '1';
+        this.ctaButton.style.transform = 'perspective(800px) rotateX(0deg) translateZ(0px)';
+        this.ctaButton.style.filter = 'blur(0px)';
+        
+        // Efecto de pulsación inicial
+        setTimeout(() => {
+            this.ctaButton.style.transform = 'perspective(800px) rotateX(0deg) translateZ(0px) scale(1.1)';
+            setTimeout(() => {
+                this.ctaButton.style.transform = 'perspective(800px) rotateX(0deg) translateZ(0px) scale(1)';
+            }, 200);
+        }, 300);
+    }
+
+    startAmbientEffects() {
+        // Efecto de respiración sutil en el hero card
+        setInterval(() => {
+            this.heroCard.style.transform = 'perspective(2000px) scale(1.02) translateY(-5px)';
+            setTimeout(() => {
+                this.heroCard.style.transform = 'perspective(2000px) scale(1) translateY(0px)';
+            }, 2000);
+        }, 8000);
+
+        // Crear nuevo polvo ocasionalmente
+        setInterval(() => {
+            this.createNewDustParticle();
+        }, 3000);
+
+        // Efectos de luz ambiental
+        this.pulsingLightEffect();
+    }
+
+    createNewDustParticle() {
+        const dust = document.createElement('div');
+        dust.style.cssText = `
+            position: absolute;
+            width: ${Math.random() * 3 + 1}px;
+            height: ${Math.random() * 3 + 1}px;
+            background: radial-gradient(circle, 
+                rgba(212, 175, 55, 0.6) 0%, 
+                rgba(255, 255, 255, 0.4) 50%, 
+                transparent 100%);
+            border-radius: 50%;
+            left: ${Math.random() * 100}%;
+            top: 100%;
+            opacity: 0;
+            animation: newDustRise 12s linear forwards;
+            pointer-events: none;
+            z-index: 3;
+        `;
+        
+        const dustContainer = this.hero.querySelector('.dust-particles');
+        if (dustContainer) {
+            dustContainer.appendChild(dust);
+            
+            // Remover después de la animación
+            setTimeout(() => {
+                dust.remove();
+            }, 12000);
+        }
+    }
+
+    pulsingLightEffect() {
+        const heroOverlay = this.hero.querySelector('.hero-bg-overlay');
+        if (heroOverlay) {
+            setInterval(() => {
+                heroOverlay.style.background = `
+                    radial-gradient(ellipse at center, 
+                        transparent 0%, 
+                        rgba(0, 0, 0, 0.2) 70%, 
+                        rgba(212, 175, 55, 0.1) 100%)
+                `;
+                
+                setTimeout(() => {
+                    heroOverlay.style.background = `
+                        radial-gradient(ellipse at center, 
+                            transparent 0%, 
+                            rgba(0, 0, 0, 0.3) 100%)
+                    `;
+                }, 3000);
+            }, 10000);
+        }
+    }
+
+    addInteractiveEffects() {
+        // Efecto parallax suave en el hero content
+        window.addEventListener('mousemove', (e) => {
+            const mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+            const mouseY = (e.clientY / window.innerHeight) * 2 - 1;
+            
+            this.heroContent.style.transform = `
+                translate3d(${mouseX * 10}px, ${mouseY * 5}px, 0) 
+                perspective(1000px) rotateY(${mouseX * 2}deg) rotateX(${-mouseY * 1}deg)
+            `;
+        });
+
+        // Efectos en el botón CTA
+        this.ctaButton.addEventListener('mouseenter', () => {
+            this.ctaButton.style.transform = `
+                perspective(800px) rotateX(-10deg) translateY(-5px) translateZ(20px) scale(1.05)
+            `;
+            this.ctaButton.style.boxShadow = `
+                0 20px 40px rgba(212, 175, 55, 0.3),
+                0 0 30px rgba(255, 255, 255, 0.2),
+                inset 0 0 20px rgba(212, 175, 55, 0.1)
+            `;
+        });
+
+        this.ctaButton.addEventListener('mouseleave', () => {
+            this.ctaButton.style.transform = 'perspective(800px) rotateX(0deg) translateY(0px) translateZ(0px) scale(1)';
+            this.ctaButton.style.boxShadow = 'none';
+        });
+    }
+
+    addCustomStyles() {
+        const styles = `
+            @keyframes veilDissolve {
+                0% { opacity: 1; }
+                70% { opacity: 0.3; }
+                100% { opacity: 0; pointer-events: none; }
+            }
+
+            @keyframes lightRayAppear {
+                0% { opacity: 0; transform: rotateZ(var(--rotation)) translateY(50px); }
+                100% { opacity: 1; transform: rotateZ(var(--rotation)) translateY(0px); }
+            }
+
+            @keyframes lightRayFloat {
+                0%, 100% { transform: rotateZ(var(--rotation)) translateY(0px) translateX(0px); }
+                25% { transform: rotateZ(var(--rotation)) translateY(-10px) translateX(5px); }
+                75% { transform: rotateZ(var(--rotation)) translateY(10px) translateX(-5px); }
+            }
+
+            @keyframes dustFloat {
+                0% { 
+                    transform: translateY(0px) translateX(0px) rotateZ(0deg); 
+                    opacity: 1; 
+                }
+                25% { 
+                    transform: translateY(-30px) translateX(20px) rotateZ(90deg); 
+                    opacity: 0.8; 
+                }
+                50% { 
+                    transform: translateY(-60px) translateX(-10px) rotateZ(180deg); 
+                    opacity: 0.6; 
+                }
+                75% { 
+                    transform: translateY(-90px) translateX(30px) rotateZ(270deg); 
+                    opacity: 0.4; 
+                }
+                100% { 
+                    transform: translateY(-120px) translateX(-20px) rotateZ(360deg); 
+                    opacity: 0; 
+                }
+            }
+
+            @keyframes dustFadeIn {
+                0% { opacity: 0; }
+                50% { opacity: 1; }
+                100% { opacity: 1; }
+            }
+
+            @keyframes newDustRise {
+                0% { 
+                    opacity: 0; 
+                    transform: translateY(0px) translateX(0px) scale(0.5); 
+                }
+                10% { 
+                    opacity: 1; 
+                    transform: translateY(-20px) translateX(10px) scale(1); 
+                }
+                90% { 
+                    opacity: 1; 
+                    transform: translateY(-100vh) translateX(-30px) scale(0.8); 
+                }
+                100% { 
+                    opacity: 0; 
+                    transform: translateY(-110vh) translateX(-40px) scale(0.3); 
+                }
+            }
+
+            @keyframes depthLayerReveal {
+                0% { 
+                    opacity: 0; 
+                    transform: scale(1.5) rotateZ(5deg); 
+                }
+                100% { 
+                    opacity: 1; 
+                    transform: scale(1) rotateZ(0deg); 
+                }
+            }
+
+            @keyframes charReveal {
+                0% { 
+                    opacity: 0; 
+                    transform: perspective(800px) rotateY(90deg) translateZ(-100px) scale(0.8); 
+                    filter: blur(5px); 
+                }
+                50% { 
+                    opacity: 0.8; 
+                    transform: perspective(800px) rotateY(45deg) translateZ(-50px) scale(1.1); 
+                    filter: blur(2px); 
+                }
+                100% { 
+                    opacity: 1; 
+                    transform: perspective(800px) rotateY(0deg) translateZ(0px) scale(1); 
+                    filter: blur(0px); 
+                }
+            }
+
+            /* Preparación para imágenes de fondo futuras */
+            .hero {
+                background-attachment: fixed;
+                background-size: cover;
+                background-position: center;
+                transition: background-image 0.8s ease-in-out;
+            }
+
+            /* Capas de profundidad preparadas para parallax */
+            .depth-layer {
+                will-change: transform;
+                backface-visibility: hidden;
+                transform-style: preserve-3d;
+            }
+
+            /* Optimizaciones de rendimiento */
+            .light-ray, .dust-particle, .cinematic-veil {
+                will-change: transform, opacity;
+                backface-visibility: hidden;
+            }
+
+            /* Responsive adjustments */
+            @media (max-width: 768px) {
+                @keyframes charReveal {
+                    0% { 
+                        opacity: 0; 
+                        transform: translateY(20px) scale(0.9); 
+                    }
+                    100% { 
+                        opacity: 1; 
+                        transform: translateY(0px) scale(1); 
+                    }
+                }
+                
+                .light-ray {
+                    opacity: 0.3 !important;
+                }
+                
+                .dust-particle {
+                    animation-duration: 8s !important;
+                }
+            }
+        `;
+
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = styles;
+        document.head.appendChild(styleSheet);
+    }
+}
+
+// Integrar con el sistema existente
+function initHeroCinematicAnimation() {
+    // Esperar a que el DOM esté listo
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            // Esperar un momento adicional para asegurar que todos los elementos estén renderizados
+            setTimeout(() => {
+                new HeroCinematicAnimation();
+            }, 500);
+        });
+    } else {
+        setTimeout(() => {
+            new HeroCinematicAnimation();
+        }, 500);
+    }
+}
+
+// Inicializar la animación cinematográfica del hero
+initHeroCinematicAnimation();
